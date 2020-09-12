@@ -45,8 +45,8 @@ public class BookTest {
 
     @Test
     public void testTestEquals() {
-        var book1 =new Book();
-        var book2 =new Book();
+        var book1 =new Book("Тармашев С.С.", "Древний.Катастрофа", 384);
+        var book2 =new Book("Тармашев С.С.", "Древний.Катастрофа", 384);
         book1.setAutor("Тармашев С.С.");
         book1.setName("Древний.Катастрофа");
         book1.setCountPage(384);
