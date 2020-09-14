@@ -9,8 +9,7 @@ public class CardService {
 
     private Logger logger = LoggerFactory.getLogger(CardService.class);
 
-    public void withdraw(double moneyWant, CreditCard creditCard) {
-       int pin = creditCard.getPin();
+    public void withdraw(double moneyWant, CreditCard creditCard, int pin) {
         if (creditCard.getPin() == pin) {
             double actualBalance;
             actualBalance = creditCard.getBalance() - moneyWant;
@@ -31,8 +30,7 @@ public class CardService {
     }
 
 
-    public void deposit(CreditCard creditCard,double money) {
-        int pin = creditCard.getPin();
+    public void deposit(CreditCard creditCard,double money, int pin) {
         if (creditCard.getPin() == pin) {
             if (creditCard.getIndebtedness() > 0) {
                 creditCard.setIndebtedness(money - creditCard.getIndebtedness());
