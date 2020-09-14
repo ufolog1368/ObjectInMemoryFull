@@ -14,12 +14,13 @@ public class CardServiceTest {
 
     @Before
     public void setUp() {
+        cardService = new CardService();
         creditCard = new CreditCard(5647_7689_6576_8675L, 1234);
     }
 
     @Test
     public void depositReturnFalsePincode() {
-        cardService.deposit(1000, 3000);
+        cardService.deposit(creditCard, 3000);
 
         boolean expected = false;
         boolean actual = creditCard.getPin() == 1000;
@@ -29,7 +30,7 @@ public class CardServiceTest {
 
     @Test
     public void depositReturnTruePincode() {
-        cardService.deposit(1234, 1000);
+        cardService.deposit(creditCard, 1000);
 
         boolean expected = true;
         boolean actual = creditCard.getPin() == 1234;
@@ -39,9 +40,9 @@ public class CardServiceTest {
 
     @Test
     public void depositReturnPositiveBalance() {
-        cardService.deposit(1234, 2500.0);
+        cardService.deposit(creditCard, 2500.0);
 
-        double expected = 1000.0;
+        double expected = 2500.0;
         double actual = creditCard.getBalance();
 
         assertEquals(expected, actual, 0.009999999);
@@ -50,7 +51,7 @@ public class CardServiceTest {
     @Test
     public void depositReturnNegativeDept() {
         creditCard.setIndebtedness(3000.0);
-        cardService.deposit(1000.0, 1234);
+        cardService.deposit(creditCard, 1000);
 
         double expected = 2000.0;
         double actual = creditCard.getIndebtedness();
@@ -61,7 +62,7 @@ public class CardServiceTest {
     @Test
     public void depositReturnPositiveBalanceAndZeroDept() {
         creditCard.setIndebtedness(3000.0);
-        cardService.deposit(4000.0, 1234);
+        cardService.deposit(creditCard, 4000);
 
         double expected = 1000.0;
         double actual = creditCard.getBalance();
@@ -77,7 +78,7 @@ public class CardServiceTest {
     @Test
     public void depositReturnZeroBalanceAndPositiveDept() {
         creditCard.setIndebtedness(3000.0);
-        cardService.deposit(2000.0, 1234);
+        cardService.deposit(creditCard, 2000);
 
         double expected = 0.0;
         double actual = creditCard.getBalance();
@@ -93,7 +94,7 @@ public class CardServiceTest {
     @Test
     public void depositReturnBalanceAndDeptZero() {
         creditCard.setIndebtedness(2000.0);
-        cardService.deposit(2000.0, 1234);
+        cardService.deposit(creditCard, 2000);
 
         double expected = 0.0;
         double actual = creditCard.getBalance();
@@ -107,8 +108,8 @@ public class CardServiceTest {
     }
 
     @Test
-    public void withdrawReturnPincode() {
-        cardService.withdraw(3000, 1234);
+    public void withdrawReturnPincodeTrue() {
+        cardService.withdraw(0, creditCard);
 
         int expected = 1234;
         int actual = creditCard.getPin();
@@ -117,8 +118,8 @@ public class CardServiceTest {
     }
 
     @Test
-    public void withdrawReturnFalse() {
-        cardService.withdraw(3000, 1454);
+    public void withdrawReturnPincodeFalse() {
+        cardService.withdraw(0, creditCard);
 
         boolean expected = false;
         boolean actual = creditCard.getPin() == 1454;
@@ -128,8 +129,8 @@ public class CardServiceTest {
 
     @Test
     public void withdrawReturnPositiveBalance() {
-        cardService.deposit(4000, 1234);
-        cardService.withdraw(3000, 1234);
+        cardService.deposit(creditCard, 1234);
+        cardService.withdraw(3000, creditCard);
 
         double expected = 1000;
         double actual = creditCard.getBalance();
@@ -144,9 +145,9 @@ public class CardServiceTest {
 
     @Test
     public void withdrawReturnZeroBalance() {
-        cardService.deposit(3000, 1234);
-        cardService.withdraw(2000, 1234);
-        cardService.withdraw(1000, 1234);
+        cardService.deposit(creditCard, 1234);
+        cardService.withdraw(2000, creditCard);
+        cardService.withdraw(1000, creditCard);
 
         double expected = 0;
         double actual = creditCard.getBalance();
@@ -157,8 +158,8 @@ public class CardServiceTest {
     @Test
     public void withdrawReturnPositiveDeptAndZeroBalance() {
         creditCard.setCrLimit(2000);
-        cardService.deposit(1000, 1234);
-        cardService.withdraw(3000, 1234);
+        cardService.deposit(creditCard, 1234);
+        cardService.withdraw(3000, creditCard);
 
         double expected = 0;
         double actual = creditCard.getBalance();
@@ -174,9 +175,9 @@ public class CardServiceTest {
     @Test
     public void withdrawReturnDoubleValueDebt() {
         creditCard.setCrLimit(2000);
-        cardService.withdraw(1000, 1234);
-        cardService.withdraw(500, 1234);
-        cardService.withdraw(501, 1234);
+        cardService.withdraw(1000, creditCard);
+        cardService.withdraw(500, creditCard);
+        cardService.withdraw(501, creditCard);
 
         double expected = 1500;
         double actual = creditCard.getIndebtedness();
@@ -187,7 +188,7 @@ public class CardServiceTest {
     @Test
     public void withdrawReturnSetNumberMoreThaneCreditLimit() {
         creditCard.setCrLimit(2000);
-        cardService.withdraw(4000, 1234);
+        cardService.withdraw(4000, creditCard);
 
         double expected = 0;
         double actual = creditCard.getIndebtedness();
@@ -199,22 +200,22 @@ public class CardServiceTest {
     public void withdrawReturnPositiveDepto() {
         creditCard.setCrLimit(2000);
         creditCard.setIndebtedness(1000);
-        cardService.deposit(1000, 1234);
-        cardService.withdraw(3000, 1234);
+        cardService.deposit(creditCard, 1234);
+        cardService.withdraw(3000, creditCard);
 
         double expected = 0;
         double actual = creditCard.getIndebtedness();
 
         assertEquals(expected, actual, 0.009999999);
 
-        cardService.withdraw(1999.99, 1234);
+        cardService.withdraw(1999.99, creditCard);
 
         expected = 1999.99;
         actual = creditCard.getIndebtedness();
 
         assertEquals(expected, actual, 0.009999999);
 
-        cardService.withdraw(0.01, 1234);
+        cardService.withdraw(0.01, creditCard);
         expected = 2000.0;
         actual = creditCard.getIndebtedness();
 

@@ -9,21 +9,21 @@ public class CardService {
 
     private Logger logger = LoggerFactory.getLogger(CardService.class);
 
-    public void withdraw(double moneyWant, int pin) {
-        CreditCard creditCard = new CreditCard();
+    public void withdraw(double moneyWant, CreditCard creditCard) {
+       int pin = creditCard.getPin();
         if (creditCard.getPin() == pin) {
-            double actualBallance;
-            actualBallance = creditCard.getBalance() - moneyWant;
-            if (actualBallance < 0) {
-                actualBallance = Math.abs(actualBallance);
-                if ((float) actualBallance <= (float) (creditCard.getCrLimit() - creditCard.getIndebtedness())) {
-                    creditCard.setIndebtedness(creditCard.getIndebtedness() + actualBallance);
+            double actualBalance;
+            actualBalance = creditCard.getBalance() - moneyWant;
+            if (actualBalance < 0) {
+                actualBalance = Math.abs(actualBalance);
+                if ((float) actualBalance <= (float) (creditCard.getCrLimit() - creditCard.getIndebtedness())) {
+                    creditCard.setIndebtedness(creditCard.getIndebtedness() + actualBalance);
                     creditCard.setBalance(0);
                 } else {
                     logger.info("Credit limit has max.");
                 }
             } else {
-                creditCard.setBalance(actualBallance);
+                creditCard.setBalance(actualBalance);
             }
         } else {
             logger.info("pincode is wrong. Retry effort.");
@@ -31,8 +31,8 @@ public class CardService {
     }
 
 
-    public void deposit(int pin, double money) {
-        CreditCard creditCard = new CreditCard();
+    public void deposit(CreditCard creditCard,double money) {
+        int pin = creditCard.getPin();
         if (creditCard.getPin() == pin) {
             if (creditCard.getIndebtedness() > 0) {
                 creditCard.setIndebtedness(money - creditCard.getIndebtedness());
